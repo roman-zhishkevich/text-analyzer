@@ -21,7 +21,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Note**: The `pymorphy3-dicts-ru` package is ~50MB and contains Russian morphological dictionaries. It will be downloaded during installation.
+**Note**: The `pymorphy3-dicts-ru` package is ~50MB and contains Russian morphological dictionaries. It will be downloaded during installation
 
 ### 3. Run the Application
 
