@@ -8,7 +8,7 @@ A Python Streamlit application for analyzing Russian and Belarusian text files w
 - 📁 **Multi-format support**: Upload .txt, .pdf, or .docx files
 - 🇷🇺 🇧🇾 **Accurate lemmatization**: Language-specific morphological analysis
 - 🔍 **Stop words filtering**: Remove prepositions, conjunctions, and common words
-- 📊 **Frequency analysis**: View top 20 most common lemmas
+- 📊 **Frequency analysis**: View top 50 most common lemmas
 - 📥 **CSV Export**: Download analysis results as CSV file
 - 🔒 **Completely offline**: All processing happens locally (after initial data download)
 - 🎨 **Clean UI**: Beautiful Streamlit interface with metrics and tables
@@ -78,7 +78,7 @@ Press `Ctrl + C` if running in the foreground
    - Total word count
    - Number of unique lemmas
    - Lexical diversity percentage
-   - Top 20 most frequent lemmas
+   - Top 50 most frequent lemmas
    - Download results as CSV for further analysis
 
 ## Requirements

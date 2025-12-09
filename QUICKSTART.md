@@ -72,6 +72,6 @@ Upload it to test the functionality:
 
 ### Output
 - **Metrics**: Total words, unique lemmas, lexical diversity %
-- **Top 20 Lemmas**: Ranked frequency table
+- **Top 50 Lemmas**: Ranked frequency table
 - **Sample**: First 50 lemmas from the text
 - **Preview**: First 500 characters of original text
