@@ -36,7 +36,7 @@ def lemmatize_russian(words):
 def get_russian_stop_words():
     """
     Returns a set of common Russian stop words
-    (prepositions, conjunctions, particles, pronouns)
+    (prepositions, conjunctions, particles, pronouns, numerals)
     """
     return {
         # Prepositions (предлоги)
@@ -50,7 +50,7 @@ def get_russian_stop_words():
         
         # Particles (частицы)
         'не', 'ни', 'бы', 'ли', 'же', 'ведь', 'уж', 'вот', 'даже', 'лишь',
-        'только', 'почти',
+        'только', 'почти', 'ну', 'то', 'нибудь',
         
         # Pronouns (местоимения)
         'я', 'ты', 'он', 'она', 'оно', 'мы', 'вы', 'они', 'мой', 'твой', 'свой',
@@ -59,6 +59,9 @@ def get_russian_stop_words():
         
         # Common verbs (вспомогательные глаголы)
         'быть', 'это', 'весь', 'себя', 'свой', 'мочь',
+        
+        # Numerals (числительные)
+        'один', 'два', 'три', 'четыре', 'пять', 'раз',
         
         # Other common words
         'да', 'нет', 'вс', 'всё', 'ещё', 'уже', 'там', 'тут', 'где', 'куда',

@@ -12,99 +12,11 @@ import re
 import io
 import csv
 
-# File reading imports
-import PyPDF2
-from docx import Document
-from io import BytesIO
-
 # Language support modules
 from ru_support import lemmatize_russian, get_russian_stop_words
 from be_support import lemmatize_belarusian, get_belarusian_stop_words
-
-
-def read_txt_file(file):
-    """
-    Read content from a .txt file with automatic encoding detection
-    
-    Args:
-        file: File object from Streamlit file uploader
-        
-    Returns:
-        str: Decoded text content
-    """
-    try:
-        # Try UTF-8 encoding first (most common)
-        content = file.read().decode('utf-8')
-    except UnicodeDecodeError:
-        # Fallback to Windows-1251 (common for Cyrillic text)
-        file.seek(0)  # Reset file pointer to beginning
-        content = file.read().decode('cp1251', errors='ignore')
-    return content
-
-
-def read_pdf_file(file):
-    """
-    Read content from a .pdf file
-    
-    Args:
-        file: File object from Streamlit file uploader
-        
-    Returns:
-        str: Extracted text from all PDF pages
-    """
-    # Create PDF reader from bytes
-    pdf_reader = PyPDF2.PdfReader(BytesIO(file.read()))
-    content = ""
-    # Extract text from each page
-    for page in pdf_reader.pages:
-        content += page.extract_text() + "\n"
-    return content
-
-
-def read_docx_file(file):
-    """
-    Read content from a .docx file
-    
-    Args:
-        file: File object from Streamlit file uploader
-        
-    Returns:
-        str: Extracted text from all DOCX paragraphs
-    """
-    # Create Document object from bytes
-    doc = Document(BytesIO(file.read()))
-    content = ""
-    # Extract text from each paragraph
-    for paragraph in doc.paragraphs:
-        content += paragraph.text + "\n"
-    return content
-
-
-def read_file_content(uploaded_file):
-    """
-    Read file content based on file type
-    
-    Args:
-        uploaded_file: Streamlit UploadedFile object
-        
-    Returns:
-        str: Extracted text content from the file
-        
-    Raises:
-        ValueError: If file type is not supported
-    """
-    # Extract file extension from filename
-    file_extension = uploaded_file.name.split('.')[-1].lower()
-    
-    # Route to appropriate reader based on file type
-    if file_extension == 'txt':
-        return read_txt_file(uploaded_file)
-    elif file_extension == 'pdf':
-        return read_pdf_file(uploaded_file)
-    elif file_extension == 'docx':
-        return read_docx_file(uploaded_file)
-    else:
-        raise ValueError(f"Unsupported file type: {file_extension}")
+from stop_words_manager import render_stop_words_ui
+from text_input_handler import render_text_input_ui
 
 
 def tokenize_text(text):
@@ -204,23 +116,19 @@ def main():
     lang_name = "Русский"
     st.info(f"{lang_emoji} **Язык анализа:** {lang_name}")
     
-    # File uploader
-    uploaded_file = st.file_uploader(
-        "Выберите файл",
-        type=['txt', 'pdf', 'docx'],
-        help="Загрузите файл .txt, .pdf или .docx с русским текстом"
-    )
+    # Render stop words management UI
+    # This returns the combined set of default + custom stop words
+    current_stop_words = render_stop_words_ui(lang_code)
     
-    # Process file if user has uploaded one
-    if uploaded_file is not None:
-        # Show success message with filename
-        st.success(f"✅ Файл загружен: **{uploaded_file.name}**")
-        
+    # Text input UI (file upload or direct paste)
+    text_content, source_name = render_text_input_ui()
+    
+    # Process text if available
+    if text_content is not None and text_content.strip():
         # Display spinner during processing
-        with st.spinner("Обработка файла..."):
+        with st.spinner("Обработка текста..."):
             try:
-                # Step 1: Extract text from file (supports .txt, .pdf, .docx)
-                text_content = read_file_content(uploaded_file)
+                # Step 1: Text is already extracted from render_text_input_ui()
                 
                 # Step 2: Tokenize text into individual words
                 words = tokenize_text(text_content)
@@ -229,14 +137,13 @@ def main():
                 if lang_code == "ru":
                     # Russian: use pymorphy3 for morphological analysis
                     lemmas = lemmatize_russian(words)
-                    stop_words = get_russian_stop_words()
                 else:
                     # Belarusian: use lemmatizer_be based on Bnkorpus
                     lemmas = lemmatize_belarusian(words)
-                    stop_words = get_belarusian_stop_words()
                 
                 # Step 4: Remove stop words (prepositions, conjunctions, etc.)
-                filtered_lemmas = filter_stop_words(lemmas, stop_words)
+                # Use stop words from the UI (includes custom additions)
+                filtered_lemmas = filter_stop_words(lemmas, current_stop_words)
                 
                 # Step 5: Calculate statistics for analysis
                 total_words = len(words)  # Total word count
@@ -289,10 +196,13 @@ def main():
                 
                 # Create CSV download button for exporting results
                 csv_data = create_csv_download(freq_data, "results.csv")
+                # Generate filename from source (remove extension if present)
+                safe_filename = source_name.rsplit('.', 1)[0] if '.' in source_name else source_name
+                safe_filename = safe_filename.replace(' ', '_')
                 st.download_button(
                     label="📥 Скачать результаты (CSV)",
                     data=csv_data,
-                    file_name=f"text_analysis_{uploaded_file.name.rsplit('.', 1)[0]}.csv",
+                    file_name=f"text_analysis_{safe_filename}.csv",
                     mime="text/csv",
                     help="Загрузить таблицу частот в формате CSV для Excel"
                 )
@@ -306,7 +216,7 @@ def main():
                 
             except Exception as e:
                 # Display error message if something goes wrong during processing
-                st.error(f"❌ Ошибка обработки файла: {str(e)}")
+                st.error(f"❌ Ошибка обработки текста: {str(e)}")
                 st.exception(e)
 
 
