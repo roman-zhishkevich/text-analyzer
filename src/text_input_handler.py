@@ -148,8 +148,8 @@ def render_text_input_ui():
             with col2:
                 st.metric("Слов (приблиз.)", f"{word_count:,}")
         
-        # Always show the button
-        if st.button("📊 Анализировать текст", type="primary", disabled=not (direct_text and direct_text.strip())):
+        # Always show and enable the button
+        if st.button("📊 Анализировать текст", type="primary"):
             if direct_text and direct_text.strip():
                 text_content = direct_text
                 source_name = "Прямой ввод текста"
