@@ -14,7 +14,7 @@ import csv
 
 # Language support modules
 from ru_support import lemmatize_russian, get_russian_stop_words
-from be_support import lemmatize_belarusian, get_belarusian_stop_words
+from belarusian.be_support import lemmatize_belarusian, get_belarusian_stop_words
 from stop_words_manager import render_stop_words_ui
 from text_input_handler import render_text_input_ui
 
@@ -96,24 +96,25 @@ def main():
     Приложение выполнит токенизацию, лемматизацию и частотный анализ.
     """)
     
-    # Language selector - Belarusian support currently disabled
-    # The commented code below allows users to choose between Russian and Belarusian
-    # Uncomment to enable multi-language selection:
-    # st.markdown("### 🌍 Выберите язык текста")
-    # language = st.radio(
-    #     "Выберите язык вашего документа:",
-    #     options=["Русский (Russian)", "Беларуская (Belarusian)"],
-    #     horizontal=True,
-    #     help="⚠️ ВАЖНО: Выберите правильный язык ПЕРЕД анализом текста!"
-    # )
-    # lang_code = "ru" if "Русский" in language else "be"
+    # Language selector
+    st.markdown("### 🌍 Выберите язык текста")
+    language = st.radio(
+        "Выберите язык вашего документа:",
+        options=["🇷🇺 Русский", "🇧🇾 Беларуская"],
+        horizontal=True,
+        help="⚠️ ВАЖНО: Выберите правильный язык ПЕРЕД анализом текста!"
+    )
     
-    # Currently hardcoded to Russian only
-    lang_code = "ru"
+    # Determine language code and display information
+    if "Русский" in language:
+        lang_code = "ru"
+        lang_emoji = "🇷🇺"
+        lang_name = "Русский"
+    else:
+        lang_code = "be"
+        lang_emoji = "🇧🇾"
+        lang_name = "Беларуская"
     
-    # Display selected language to user
-    lang_emoji = "🇷🇺"
-    lang_name = "Русский"
     st.info(f"{lang_emoji} **Язык анализа:** {lang_name}")
     
     # Render stop words management UI

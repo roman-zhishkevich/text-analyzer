@@ -69,3 +69,6 @@ htmlcov/
 .env
 .env.local
 
+
+# Large data files (download via scripts)
+data/grammardb.json

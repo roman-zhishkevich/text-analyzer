@@ -5,7 +5,7 @@ Provides interface for viewing and managing stop words
 
 import streamlit as st
 from ru_support import get_russian_stop_words
-from be_support import get_belarusian_stop_words
+from belarusian.be_support import get_belarusian_stop_words
 
 
 def render_stop_words_ui(lang_code="ru"):
