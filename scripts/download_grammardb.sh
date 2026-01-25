@@ -31,3 +31,4 @@ echo "2. Run: python scripts/convert_grammardb_to_json.py $TEMP_DIR data/grammar
 echo ""
 echo "Temp directory: $TEMP_DIR"
 
+

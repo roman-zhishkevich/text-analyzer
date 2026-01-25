@@ -82,12 +82,12 @@ if [ -f "data/grammardb.json" ]; then
     echo "✅ data/grammardb.json created successfully"
     echo "   File size: $FILE_SIZE"
     echo ""
-    
+
     # Test
     echo "🧪 Running test..."
     python3 test_belarusian_lemmatizer.py | head -30
     echo ""
-    
+
     echo "╔════════════════════════════════════════════════════════════════╗"
     echo "║                    ✅ SUCCESS!                                 ║"
     echo "╚════════════════════════════════════════════════════════════════╝"
